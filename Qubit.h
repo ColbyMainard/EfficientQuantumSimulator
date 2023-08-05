@@ -8,7 +8,9 @@ template<typename T> struct Qubit{
     UniqueComplexMatrixPtr<T> hilbert_space;
     protected:
     void normalize(){
-        // TODO: Finish
+        complex<T> total = hilbert_space.get()->getElement(0, 0) + hilbert_space.get()->getElement(1, 0);
+        hilbert_space.get()->setElement(0, 0, hilbert_space.get()->getElement(0, 0) / total);
+        hilbert_space.get()->setElement(1, 0, hilbert_space.get()->getElement(1, 0) / total);
     }
     public:
     Qubit(){
@@ -81,6 +83,8 @@ template<typename T> ostream& operator<<(ostream& os, const Qubit<T>& bit){
 }
 
 template<typename T> istream& operator<<(istream& is, Qubit<T>& bit){
-    // TODO: Finish
+    ComplexMatrix<T> matrix(2, 1);
+    is >> matrix;
+    bit.setState(matrix);
     return is;
 }
