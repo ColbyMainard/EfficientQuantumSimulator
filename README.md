@@ -7,7 +7,7 @@ Makefiles and installation handled automatically
 ## File structure
 Matrix.h - matrix representation useful for hilbert spaces
 Qubit.h - representation of a single qubit
-QuantumCircuit.h - 
+QuantumCircuit.h - Represents a circuit containing one or more qubits and one or more gates
 
 ## Testing
 Located in test directory

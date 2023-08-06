@@ -1,17 +1,21 @@
 #pragma once
 
+#include <math.h>
+#include <cmath>
 #include "Matrix.h"
 #include <exception>
 
 template<typename T> struct Qubit{
     private:
     UniqueComplexMatrixPtr<T> hilbert_space;
+    
     protected:
     void normalize(){
-        complex<T> total = hilbert_space.get()->getElement(0, 0) + hilbert_space.get()->getElement(1, 0);
+        complex<T> total = this->magnitude();
         hilbert_space.get()->setElement(0, 0, hilbert_space.get()->getElement(0, 0) / total);
         hilbert_space.get()->setElement(1, 0, hilbert_space.get()->getElement(1, 0) / total);
     }
+    
     public:
     Qubit(){
         hilbert_space = UniqueComplexMatrixPtr<T>(new ComplexMatrix<T>(2, 1));
@@ -74,6 +78,14 @@ template<typename T> struct Qubit{
         this->hilbert_space.get()->setElement(0, 0, state.getElement(0, 0));
         this->hilbert_space.get()->setElement(1, 0, state.getElement(1, 0));
         normalize();
+    }
+
+    T magnitude(){
+        complex<T> val_1 = hilbert_space.get()->getElement(0, 0);
+        val_1 *= val_1;
+        complex<T> val_2 = hilbert_space.get()->getElement(1, 0);
+        val_2 *= val_2;
+        return sqrt(abs(val_1 + val_2));
     }
 };
 
