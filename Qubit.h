@@ -11,7 +11,7 @@ template<typename T> struct Qubit{
     
     protected:
     void normalize(){
-        complex<T> total = this->magnitude();
+        std::complex<T> total = this->magnitude();
         hilbert_space.get()->setElement(0, 0, hilbert_space.get()->getElement(0, 0) / total);
         hilbert_space.get()->setElement(1, 0, hilbert_space.get()->getElement(1, 0) / total);
     }
@@ -19,8 +19,8 @@ template<typename T> struct Qubit{
     public:
     Qubit(){
         hilbert_space = UniqueComplexMatrixPtr<T>(new ComplexMatrix<T>(2, 1));
-        hilbert_space.get()->setElement(0, 0, complex<T>(1));
-        hilbert_space.get()->setElement(1, 0, complex<T>(0));
+        hilbert_space.get()->setElement(0, 0, std::complex<T>(1));
+        hilbert_space.get()->setElement(1, 0, std::complex<T>(0));
     }
     
     Qubit(const Qubit& other){
@@ -53,15 +53,15 @@ template<typename T> struct Qubit{
     
     void turnOn(){
         this->turnOff();
-        complex<T> zero_val = this->hilbert_space.get()->getElement(0, 0);
-        complex<T> one_val = this->hilbert_space.get()->getElement(1, 0);
-        this->hilbert_space.get()->setElement(0, 0, complex<T>(0));
-        this->hilbert_space.get()->setElement(1, 0, complex<T>(1));
+        std::complex<T> zero_val = this->hilbert_space.get()->getElement(0, 0);
+        std::complex<T> one_val = this->hilbert_space.get()->getElement(1, 0);
+        this->hilbert_space.get()->setElement(0, 0, std::complex<T>(0));
+        this->hilbert_space.get()->setElement(1, 0, std::complex<T>(1));
     }
     
     void turnOff(){
-        hilbert_space.get()->setElement(0, 0, complex<T>(1));
-        hilbert_space.get()->setElement(1, 0, complex<T>(0));
+        hilbert_space.get()->setElement(0, 0, std::complex<T>(1));
+        hilbert_space.get()->setElement(1, 0, std::complex<T>(0));
     }
     
     const ComplexMatrix<T>& getState(){
@@ -70,10 +70,10 @@ template<typename T> struct Qubit{
     
     void setState(const ComplexMatrix<T>& state){
         if(state.getRows() != 2){
-            throw runtime_error("Incorrect number of rows.");
+            throw std::runtime_error("Incorrect number of rows.");
         }
         if(state.getCols() != 1){
-            throw runtime_error("Incorrect number of cols.");
+            throw std::runtime_error("Incorrect number of cols.");
         }
         this->hilbert_space.get()->setElement(0, 0, state.getElement(0, 0));
         this->hilbert_space.get()->setElement(1, 0, state.getElement(1, 0));
@@ -81,20 +81,20 @@ template<typename T> struct Qubit{
     }
 
     T magnitude(){
-        complex<T> val_1 = hilbert_space.get()->getElement(0, 0);
+        std::complex<T> val_1 = hilbert_space.get()->getElement(0, 0);
         val_1 *= val_1;
-        complex<T> val_2 = hilbert_space.get()->getElement(1, 0);
+        std::complex<T> val_2 = hilbert_space.get()->getElement(1, 0);
         val_2 *= val_2;
         return sqrt(abs(val_1 + val_2));
     }
 };
 
-template<typename T> ostream& operator<<(ostream& os, const Qubit<T>& bit){
+template<typename T> std::ostream& operator<<(std::ostream& os, const Qubit<T>& bit){
     os << bit.getState();
     return os;
 }
 
-template<typename T> istream& operator<<(istream& is, Qubit<T>& bit){
+template<typename T> std::istream& operator<<(std::istream& is, Qubit<T>& bit){
     ComplexMatrix<T> matrix(2, 1);
     is >> matrix;
     bit.setState(matrix);

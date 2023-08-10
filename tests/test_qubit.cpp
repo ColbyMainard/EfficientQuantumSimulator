@@ -1,5 +1,7 @@
 #include "../Qubit.h"
 
+using namespace std;
+
 void constructor_tests(){
     cout << "Constructor tests..." << endl;
     cout << "\tDefault constructor..." << endl;

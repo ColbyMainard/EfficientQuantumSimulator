@@ -17,71 +17,69 @@
 
 #include <exception>
 
-using namespace std;
-
-template<typename T> bool operator>(const complex<T>& c1, const complex<T>& c2){
+template<typename T> bool operator>(const std::complex<T>& c1, const std::complex<T>& c2){
     return abs(c1) > abs(c2);
 }
 
-template<typename T> bool operator<(const complex<T>& c1, const complex<T>& c2){
+template<typename T> bool operator<(const std::complex<T>& c1, const std::complex<T>& c2){
     return abs(c1) < abs(c2);
 }
 
-template<typename T> bool operator<=(const complex<T>& c1, const complex<T>& c2){
+template<typename T> bool operator<=(const std::complex<T>& c1, const std::complex<T>& c2){
     return abs(c1) <= abs(c2);
 }
 
-template<typename T> bool operator>=(const complex<T>& c1, const complex<T>& c2){
+template<typename T> bool operator>=(const std::complex<T>& c1, const std::complex<T>& c2){
     return abs(c1) >= abs(c2);
 }
 
-// template<typename T> bool operator==(const complex<T>& c1, const complex<T>& c2){
+// template<typename T> bool operator==(const std::complex<T>& c1, const std::complex<T>& c2){
 //     return abs(c1) == abs(c2);
 // }
 
-template<typename T> bool operator>(const complex<T>& c1, const double& d){
+template<typename T> bool operator>(const std::complex<T>& c1, const double& d){
     return abs(c1) > d;
 }
 
-template<typename T> bool operator<(const complex<T>& c1, const double& d){
+template<typename T> bool operator<(const std::complex<T>& c1, const double& d){
     return abs(c1) < d;
 }
 
-template<typename T> bool operator<=(const complex<T>& c1, const double& d){
+template<typename T> bool operator<=(const std::complex<T>& c1, const double& d){
     return abs(c1) <= d;
 }
 
-template<typename T> bool operator>=(const complex<T>& c1, const double& d){
+template<typename T> bool operator>=(const std::complex<T>& c1, const double& d){
     return abs(c1) >= d;
 }
 
-template<typename T> bool operator==(const complex<T>& c1, const double& d){
+template<typename T> bool operator==(const std::complex<T>& c1, const double& d){
     return abs(c1) == d;
 }
 
-template<typename T> bool operator>(const double& d, const complex<T>& c1){
+template<typename T> bool operator>(const double& d, const std::complex<T>& c1){
     return abs(c1) > d;
 }
 
-template<typename T> bool operator<(const double& d, const complex<T>& c1){
+template<typename T> bool operator<(const double& d, const std::complex<T>& c1){
     return abs(c1) < d;
 }
 
-template<typename T> bool operator<=(const double& d, const complex<T>& c1){
+template<typename T> bool operator<=(const double& d, const std::complex<T>& c1){
     return abs(c1) <= d;
 }
 
-template<typename T> bool operator>=(const double& d, const complex<T>& c1){
+template<typename T> bool operator>=(const double& d, const std::complex<T>& c1){
     return abs(c1) >= d;
 }
 
-template<typename T> bool operator==(const double& d, const complex<T>& c1){
+template<typename T> bool operator==(const double& d, const std::complex<T>& c1){
     return abs(c1) == d;
 }
 
 template<typename T> struct Matrix{
     private:
-        vector<vector<T>> elements;
+        std::vector<std::vector<T>> elements;
         unsigned long long int rows;
         unsigned long long int cols;
     protected:
@@ -90,17 +88,17 @@ template<typename T> struct Matrix{
         Matrix(){
             this->rows = 0;
             this->cols = 0;
-            this->elements = vector<vector<T>>();
+            this->elements = std::vector<std::vector<T>>();
         }
 
         //custom constructor
         Matrix(unsigned long long int rownum, unsigned long long int colnum)
             :rows(rownum),
             cols(colnum),
-            elements(vector<vector<T>>())
+            elements(std::vector<std::vector<T>>())
         {
             for(unsigned long long int i = 0; i < rownum; ++i){
-                elements.push_back(vector<T>());
+                elements.push_back(std::vector<T>());
                 for(unsigned long long int j = 0; j < colnum; ++j){
                     elements[i].push_back(T(0));
                 }
@@ -111,10 +109,10 @@ template<typename T> struct Matrix{
         Matrix(const Matrix& other)
             :rows(other.rows),
             cols(other.cols),
-            elements(vector<vector<T>>())
+            elements(std::vector<std::vector<T>>())
         {
             for(unsigned long long int i = 0; i < this->rows; ++i){
-                this->elements.push_back(vector<T>());
+                this->elements.push_back(std::vector<T>());
                 for(unsigned long long int j = 0; j < this->cols; ++j){
                     this->elements[i].push_back(T(0));
                 }
@@ -126,10 +124,10 @@ template<typename T> struct Matrix{
         Matrix(Matrix& other)
             :rows(other.rows),
             cols(other.cols),
-            elements(vector<vector<T>>())
+            elements(std::vector<std::vector<T>>())
         {
             for(unsigned long long int i = 0; i < this->rows; ++i){
-                this->elements.push_back(vector<T>());
+                this->elements.push_back(std::vector<T>());
                 for(unsigned long long int j = 0; j < this->cols; ++j){
                     this->elements[i].push_back(T(0));
                 }
@@ -141,10 +139,10 @@ template<typename T> struct Matrix{
         Matrix operator=(const Matrix& other){
             this->rows = other.getRows();
             this->cols = other.getCols();
-            this->elements = vector<vector<T>>();
+            this->elements = std::vector<std::vector<T>>();
             
             for(unsigned long long int i = 0; i < this->rows; ++i){
-                this->elements.push_back(vector<T>());
+                this->elements.push_back(std::vector<T>());
                 for(unsigned long long int j = 0; j < this->cols; ++j){
                     this->elements[i].push_back(T(0));
                 }
@@ -156,10 +154,10 @@ template<typename T> struct Matrix{
         Matrix operator=(Matrix& other){
             this->rows = other.getRows();
             this->cols = other.getCols();
-            this->elements = vector<vector<T>>();
+            this->elements = std::vector<std::vector<T>>();
             
             for(unsigned long long int i = 0; i < this->rows; ++i){
-                this->elements.push_back(vector<T>());
+                this->elements.push_back(std::vector<T>());
                 for(unsigned long long int j = 0; j < this->cols; ++j){
                     this->elements[i].push_back(T(0));
                 }
@@ -188,13 +186,13 @@ template<typename T> struct Matrix{
         //determinant
         T determinant(){
             if(this->rows != this->cols){
-                throw runtime_error("Cannot get determinant.");
+                throw std::runtime_error("Cannot get determinant.");
             }
             Matrix<T> mat_copy((const Matrix&) *this);
             // https://www.geeksforgeeks.org/determinant-of-a-matrix/
             T num1, num2, det(1), total(1);
             unsigned long long int index;
-            vector<T> temp;
+            std::vector<T> temp;
             for(unsigned int i = 0; i < rows; ++i){
                 temp.push_back(0);
             }
@@ -295,24 +293,24 @@ template<typename T> struct Matrix{
         }
 };
 
-template<typename T> using UniqueMatrixPtr = unique_ptr<Matrix<T>>;
+template<typename T> using UniqueMatrixPtr = std::unique_ptr<Matrix<T>>;
 
-template<typename T> using SharedMatrixPtr = shared_ptr<Matrix<T>>;
+template<typename T> using SharedMatrixPtr = std::shared_ptr<Matrix<T>>;
 
-template<typename T> using ComplexMatrix = Matrix<complex<T>>;
+template<typename T> using ComplexMatrix = Matrix<std::complex<T>>;
 
-template<typename T> using UniqueComplexMatrixPtr = unique_ptr<ComplexMatrix<T>>;
+template<typename T> using UniqueComplexMatrixPtr = std::unique_ptr<ComplexMatrix<T>>;
 
-template<typename T> using SharedComplexMatrixPtr = shared_ptr<ComplexMatrix<T>>;
+template<typename T> using SharedComplexMatrixPtr = std::shared_ptr<ComplexMatrix<T>>;
 
 template<typename T> Matrix<T> operator+(const Matrix<T>& mat1, const Matrix<T>& mat2){
     auto mat_1_rows = mat1.getRows();
     auto mat_2_rows = mat2.getRows();
     if(mat_1_rows != mat_2_rows){
-        throw runtime_error("Rows not compatible.");
+        throw std::runtime_error("Rows not compatible.");
     }
     if(mat1.getCols() != mat2.getCols()){
-        throw runtime_error("Cols not compatible.");
+        throw std::runtime_error("Cols not compatible.");
     }
     Matrix<T> ans = Matrix<T>(mat1.getRows(), mat1.getCols());
     for(unsigned long long int i = 0; i < mat1.getRows(); ++i){
@@ -325,10 +323,10 @@ template<typename T> Matrix<T> operator+(const Matrix<T>& mat1, const Matrix<T>&
 
 template<typename T> Matrix<T> operator-(const Matrix<T>& mat1, const Matrix<T>& mat2){
     if(mat1.getRows() != mat2.getRows()){
-        throw runtime_error("Rows not compatible.");
+        throw std::runtime_error("Rows not compatible.");
     }
     if(mat1.getCols() != mat2.getCols()){
-        throw runtime_error("Cols not compatible.");
+        throw std::runtime_error("Cols not compatible.");
     }
     Matrix<T> ans = Matrix<T>(mat1.getRows(), mat1.getCols());
     for(unsigned long long int i = 0; i < mat1.getRows(); ++i){
@@ -341,7 +339,7 @@ template<typename T> Matrix<T> operator-(const Matrix<T>& mat1, const Matrix<T>&
 
 template<typename T> Matrix<T> operator*(const Matrix<T>& mat1, const Matrix<T>& mat2){
     if (mat1.getCols() != mat2.getRows()) {
-		throw runtime_error("Matrices to multiply incompatible");
+		throw std::runtime_error("Matrices to multiply incompatible");
 	}
 	Matrix<T> answer = Matrix<T>(mat1.getRows(), mat2.getCols());
 
@@ -391,20 +389,20 @@ template<typename T> Matrix<T> operator*(T scalar, Matrix<T>& mat1){
     }
 }
 
-template<typename T> ostream& operator<<(ostream& os, const Matrix<T>& mat){
+template<typename T> std::ostream& operator<<(std::ostream& os, const Matrix<T>& mat){
     unsigned long long int rows = mat.getRows();
     unsigned long long int cols = mat.getCols();
-    os << rows << " " << cols << endl;
+    os << rows << " " << cols << std::endl;
     for(unsigned long long int i = 0; i < rows; ++i){
         for(unsigned long long int j = 0; j < cols; ++j){
             os << mat.getElement(i, j) << " ";
         }
-        os << endl;
+        os << std::endl;
     }
     return os;
 }
 
-template<typename T> istream& operator<<(istream& is, Matrix<T>& mat){
+template<typename T> std::istream& operator<<(std::istream& is, Matrix<T>& mat){
     unsigned long long int rows, cols;
     is >> rows;
     is >> cols;

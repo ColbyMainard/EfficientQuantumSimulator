@@ -3,6 +3,8 @@
 #include <cmath>
 #include <math.h>
 
+using namespace std;
+
 void constructor_tests(){
     cout << "Constructor tests..." << endl << "\tDefault constructor:" << endl;
     Matrix<double> default_val = Matrix<double>();
