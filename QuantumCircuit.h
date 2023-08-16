@@ -65,7 +65,7 @@ template<typename T> ComplexMatrix<T> Ry_gate(T theta){
     return ans;
 }
 
-template<typename T> ComplexMatrix<T> Rz_gate(T lambda){
+template<typename T> ComplexMatrix<T> Rphi_gate(T lambda){
     ComplexMatrix<T> ans(2, 2);
     ans.setElement(0, 0, std::complex<T>(1));
     ans.setElement(0, 1, std::complex<T>(0));
@@ -85,7 +85,7 @@ template<typename T> ComplexMatrix<T> S_gate(){
 }
 
 template<typename T> ComplexMatrix<T> T_gate(){
-    return Rz_gate<T>(M_PI / 4);
+    return Rphi_gate<T>(M_PI / 4);
 }
 
 template<typename T> ComplexMatrix<T> CNOT_gate(){
@@ -100,9 +100,9 @@ template<typename T> ComplexMatrix<T> CNOT_gate(){
 template<typename T> ComplexMatrix<T> CZ_gate(){
     ComplexMatrix<T> ans(4, 4);
     ans.setElement(0, 0, std::complex<T>(1));
-    ans.setElement(1, 2, std::complex<T>(1));
-    ans.setElement(2, 1, std::complex<T>(1));
-    ans.setElement(3, 3, std::complex<T>(-11));
+    ans.setElement(1, 1, std::complex<T>(1));
+    ans.setElement(2, 2, std::complex<T>(1));
+    ans.setElement(3, 3, std::complex<T>(-1));
     return ans;
 }
 
@@ -141,19 +141,6 @@ template<typename T> ComplexMatrix<T> Fredkin_gate(){
     return ans;
 }
 
-template<typename T> ComplexMatrix<T> Bell_gate(){
-    ComplexMatrix<T> ans(4, 4);
-    ans.setElement(0, 0, std::complex<T>(1));
-    ans.setElement(0, 2, std::complex<T>(1));
-    ans.setElement(1, 1, std::complex<T>(1));
-    ans.setElement(1, 3, std::complex<T>(1));
-    ans.setElement(2, 1, std::complex<T>(1));
-    ans.setElement(2, 3, std::complex<T>(-1));
-    ans.setElement(3, 0, std::complex<T>(1));
-    ans.setElement(3, 2, std::complex<T>(-1));
-    return ans;
-}
-
 template<typename T> struct QuantumCircuit{
     private:
     unsigned long long int num_qubits;
@@ -162,7 +149,11 @@ template<typename T> struct QuantumCircuit{
     std::vector<std::vector<unsigned long long int>> qubit_indices;
     
     protected:
-    void runGate(UniqueComplexMatrixPtr<T>& gate_matrix, std::vector<unsigned long long int> qubits_involved){}
+    std::unordered_map<std::string, unsigned long long int> runGate(UniqueComplexMatrixPtr<T>& gate_matrix, std::vector<unsigned long long int> qubits_involved){
+        std::unordered_map<std::string, unsigned long long int> ans;
+        //TODO: Finish
+        return ans;
+    }
     
     public:
     QuantumCircuit():
@@ -282,8 +273,10 @@ template<typename T> struct QuantumCircuit{
         qubit_indices.push_back(indices);
     }
     
-    void sampleCircuit(){
+    std::unordered_map<std::string, unsigned long long int> sampleCircuit(unsigned long long int samples){
+        std::unordered_map<std::string, unsigned long long int> ans;
         //TODO: Finish
+        return ans;
     }
 };
 
