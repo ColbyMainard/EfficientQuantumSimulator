@@ -17,6 +17,10 @@
 
 #include <exception>
 
+/*
+MISCELLANEOUS COMPARISON OPERATORS
+*/
+
 template<typename T> bool operator>(const std::complex<T>& c1, const std::complex<T>& c2){
     return abs(c1) > abs(c2);
 }
@@ -32,10 +36,6 @@ template<typename T> bool operator<=(const std::complex<T>& c1, const std::compl
 template<typename T> bool operator>=(const std::complex<T>& c1, const std::complex<T>& c2){
     return abs(c1) >= abs(c2);
 }
-
-// template<typename T> bool operator==(const std::complex<T>& c1, const std::complex<T>& c2){
-//     return abs(c1) == abs(c2);
-// }
 
 template<typename T> bool operator>(const std::complex<T>& c1, const double& d){
     return abs(c1) > d;
@@ -293,6 +293,10 @@ template<typename T> struct Matrix{
         }
 };
 
+/*
+Shorthand for matrix-based subclasses and pointers
+*/
+
 template<typename T> using UniqueMatrixPtr = std::unique_ptr<Matrix<T>>;
 
 template<typename T> using SharedMatrixPtr = std::shared_ptr<Matrix<T>>;
@@ -302,6 +306,10 @@ template<typename T> using ComplexMatrix = Matrix<std::complex<T>>;
 template<typename T> using UniqueComplexMatrixPtr = std::unique_ptr<ComplexMatrix<T>>;
 
 template<typename T> using SharedComplexMatrixPtr = std::shared_ptr<ComplexMatrix<T>>;
+
+/*
+Math operators
+*/
 
 template<typename T> Matrix<T> operator+(const Matrix<T>& mat1, const Matrix<T>& mat2){
     auto mat_1_rows = mat1.getRows();
@@ -388,6 +396,10 @@ template<typename T> Matrix<T> operator*(T scalar, Matrix<T>& mat1){
         }
     }
 }
+
+/*
+Input and output operators
+*/
 
 template<typename T> std::ostream& operator<<(std::ostream& os, const Matrix<T>& mat){
     unsigned long long int rows = mat.getRows();

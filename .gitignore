@@ -6,3 +6,6 @@ CMakeCache.txt
 Makefile
 *.bin
 *.json
+*.cmake
+Testing/*
+*Testfile.cmake

@@ -8,6 +8,7 @@ Makefiles and installation handled automatically
 Matrix.h - matrix representation useful for hilbert spaces
 Qubit.h - representation of a single qubit
 QuantumCircuit.h - Represents a circuit containing one or more qubits and one or more gates
+tests/test_* - tests related to the associated file (e.g. matrix, quantum circuits, qubit)
 
 ## Testing
 Located in test directory
