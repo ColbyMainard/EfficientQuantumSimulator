@@ -1,8 +1,14 @@
 #include "../Qubit.h"
 
+// #define CATCH_CONFIG_MAIN
+// #include "catch.hpp"
+
+#define CATCH_CONFIG_RUNNER
+#include "catch.hpp"
+
 using namespace std;
 
-void constructor_tests(){
+TEST_CASE("Benchmark constructors", "[constructor]"){
     cout << "Constructor tests..." << endl;
     cout << "\tDefault constructor..." << endl;
     Qubit<double> default_constructor;
@@ -13,7 +19,7 @@ void constructor_tests(){
     cout << "Done!" << endl;
 }
 
-void assignment_tests(){
+TEST_CASE("Benchmark assignment operators", "[assignment]"){
     cout << "Assignment tests..." << endl;
     Qubit<float> default_cons;
     cout << "\tCopy assignment..." << endl;
@@ -23,7 +29,7 @@ void assignment_tests(){
     cout << "Done!" << endl;
 }
 
-void setting_states(){
+TEST_CASE("Benchmark setting states", "[setstate]"){
     cout << "Setting states tests..." << endl;
     Qubit<double> test_qubit;
     cout << test_qubit << endl;
@@ -42,55 +48,36 @@ void setting_states(){
     cout << "Done!" << endl;
 }
 
-void normalization_tests(){
+TEST_CASE("Benchmark normalization", "[normalization]"){
     cout << "Normalization tests..." << endl;
     ComplexMatrix<double> test_1(2, 1);
     test_1.setElement(0, 0, complex<double>(1, 2));
     test_1.setElement(1, 0, complex<double>(3, 4));
     Qubit<double> bit_1;
     bit_1.setState(test_1);
-    if(bit_1.magnitude() < 0.999999 || bit_1.magnitude() > 1.000001){
-        cout << bit_1 << endl;
-        throw runtime_error("Failed to normalize bit 1.");
-    } else {
-        cout << "\tBit 1 test succeeded..." << endl;
-    }
+    REQUIRE(bit_1.magnitude() > 0.999999);
+    REQUIRE(bit_1.magnitude() < 1.000001);
     ComplexMatrix<double> test_2(2, 1);
     test_2.setElement(0, 0, complex<double>(0, 0));
     test_2.setElement(1, 0, complex<double>(0, 2));
     Qubit<double> bit_2;
     bit_2.setState((const ComplexMatrix<double>) test_2);
-    if(bit_2.magnitude() < 0.999999 || bit_2.magnitude() > 1.000001){
-        cout << bit_2 << endl;
-        throw runtime_error("Failed to normalize bit 2.");
-    } else {
-        cout << "\tBit 2 test succeeded..." << endl;
-    }
+    REQUIRE(bit_2.magnitude() > 0.999999);
+    REQUIRE(bit_2.magnitude() < 1.000001);
     ComplexMatrix<double> test_3(2, 1);
     test_3.setElement(0, 0, complex<double>(3, 0));
     test_3.setElement(1, 0, complex<double>(4, 0));
     Qubit<double> bit_3;
     bit_3.setState((const ComplexMatrix<double>)test_3);
-    if(bit_3.magnitude() < 0.999999 || bit_3.magnitude() > 1.000001){
-        cout << bit_3 << endl;
-        throw runtime_error("Failed to normalize bit 3.");
-    } else {
-        cout << "\tBit 3 test succeeded..." << endl;
-    }
+    REQUIRE(bit_3.magnitude() > 0.999999);
+    REQUIRE(bit_3.magnitude() < 1.000001);
     cout << "Done!" << endl;
 }
 
-int main(){
-    try{
-        constructor_tests();
-        assignment_tests();
-        setting_states();
-        normalization_tests();
-    } catch(exception& e) {
-        cerr << "Error occurred: " << e.what() << endl;
-        return 1;
-    } catch(...) {
-        cerr << "Unknown exception." << endl;
-        return 2;
-    }
+int main( int argc, char* argv[] ) {
+    Catch::Session session;
+    int returnCode = session.applyCommandLine( argc, argv );
+    if( returnCode != 0 ) { return returnCode; }
+    int numFailed = session.run();
+    return numFailed;
 }

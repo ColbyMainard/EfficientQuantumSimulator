@@ -107,8 +107,8 @@ template<typename T> struct Matrix{
 
         //copy constructor
         Matrix(const Matrix& other)
-            :rows(other.rows),
-            cols(other.cols),
+            :rows(other.getRows()),
+            cols(other.getCols()),
             elements(std::vector<std::vector<T>>())
         {
             for(unsigned long long int i = 0; i < this->rows; ++i){
@@ -122,8 +122,8 @@ template<typename T> struct Matrix{
 
         //move constructor
         Matrix(Matrix& other)
-            :rows(other.rows),
-            cols(other.cols),
+            :rows(other.getRows()),
+            cols(other.getCols()),
             elements(std::vector<std::vector<T>>())
         {
             for(unsigned long long int i = 0; i < this->rows; ++i){
@@ -131,7 +131,7 @@ template<typename T> struct Matrix{
                 for(unsigned long long int j = 0; j < this->cols; ++j){
                     this->elements[i].push_back(T(0));
                 }
-                std::copy(other.elements[i].begin(), other.elements[i].end(), this->elements[i].begin());
+                std::move(other.elements[i].begin(), other.elements[i].end(), this->elements[i].begin());
             }
         }
 
@@ -161,7 +161,7 @@ template<typename T> struct Matrix{
                 for(unsigned long long int j = 0; j < this->cols; ++j){
                     this->elements[i].push_back(T(0));
                 }
-                std::copy(other.elements[i].begin(), other.elements[i].end(), this->elements[i].begin());
+                std::move(other.elements[i].begin(), other.elements[i].end(), this->elements[i].begin());
             }
 
             delete other;

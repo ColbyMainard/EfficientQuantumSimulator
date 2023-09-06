@@ -151,7 +151,7 @@ template<typename T> struct QuantumCircuit{
     
     protected:
 
-    // Setting all qubits 
+    // Setting all qubits to an off state
     void turnAllQubitsOff(){
         for(unsigned long long int i = 0; i < num_qubits; ++i){
             qubits[i].turnOff();
@@ -162,9 +162,11 @@ template<typename T> struct QuantumCircuit{
     ComplexMatrix<T> runGate(unsigned long long int gate_index){
         ComplexMatrix<T> gate_matrix((const ComplexMatrix<T>&) *(gate_matrices.at(gate_index)));
         std::vector<unsigned long long int> qubits_involved = qubit_indices[gate_index];
+        // input validation
         if(qubits_involved.size() > 3){
             throw std::runtime_error("Gate is too large, and is not supported.");
         }
+        // convert qubit state to larger Hilbert space (big-endian)
         ComplexMatrix<T> start(pow(2, qubits_involved.size()), 1);
         if(qubits_involved.size() == 1){
             start.setElement(0, 0, qubits[qubits_involved[0]].getState().getElement(0, 0));
@@ -186,7 +188,9 @@ template<typename T> struct QuantumCircuit{
             start.setElement(6, 0, qubits[qubits_involved[0]].getState().getElement(1, 0) * qubits[qubits_involved[1]].getState().getElement(1, 0) * qubits[qubits_involved[2]].getState().getElement(0, 0));
             start.setElement(7, 0, qubits[qubits_involved[0]].getState().getElement(1, 0) * qubits[qubits_involved[1]].getState().getElement(1, 0) * qubits[qubits_involved[2]].getState().getElement(1, 0));
         }
+        //perform calculation of final Hilbert space
         ComplexMatrix<T> ans = gate_matrix * start;
+        // convert final Hilbert space to qubit final states (big-endian)
         if(qubits_involved.size() == 1){
             ComplexMatrix<T> qubit_1_state(2, 1);
             qubit_1_state.setElement(0, 0, ans.getElement(0, 0));
@@ -220,6 +224,7 @@ template<typename T> struct QuantumCircuit{
         return ans;
     }
 
+    //Helper method to int_to_string
     std::string unary_int_to_string(unsigned long long int val){
         switch(val){
             case 0:
@@ -229,10 +234,10 @@ template<typename T> struct QuantumCircuit{
             default:
                 [[unlikely]]
                 throw std::runtime_error("Value not recognized.  Please rewrite algorithm to use, unary, binary, and / or ternary gates.");
-                break;
         }
     }
 
+    //Helper method to int_to_string
     std::string binary_int_to_string(unsigned long long int val){
         switch(val){
             case 0:
@@ -246,10 +251,10 @@ template<typename T> struct QuantumCircuit{
             default:
                 [[unlikely]]
                 throw std::runtime_error("Value not recognized.  Please rewrite algorithm to use, unary, binary, and / or ternary gates.");
-                break;
         }
     }
 
+    //Helper method to int_to_string
     std::string trinary_int_to_string(unsigned long long int val){
         switch (val) {
             case 0:
@@ -271,10 +276,10 @@ template<typename T> struct QuantumCircuit{
             default:
                 [[unlikely]]
                 throw std::runtime_error("Value not recognized.  Please rewrite algorithm to use, unary, binary, and / or ternary gates.");
-                break;
         }
     }
 
+    //Convert integer to big-endian binary stored in string
     std::string int_to_string(unsigned long long int val, unsigned long long int gate_rows){
         switch(gate_rows){
             case 2:
@@ -291,17 +296,19 @@ template<typename T> struct QuantumCircuit{
         }
     }
 
+    // Collect single sample of gate
     std::string sampleGate(const ComplexMatrix<T>& results){
         // set up boundaries between probabilities of outputs
         std::vector<double> boundaries = {0};
         double boundary = 0;
         for(unsigned long long int i = 0; i < results.getRows(); ++i){
-            boundary += std::abs(results.getElement(0, i));
+            auto val = std::abs(results.getElement(0, i));
+            boundary += val;
             boundaries.push_back(boundary);
         }
         // generate random value in range
         double lower_bound = 0;
-        double upper_bound = 10000;
+        double upper_bound = boundaries[boundaries.size() - 1];
         std::uniform_real_distribution<double> unif(lower_bound,upper_bound);
         std::default_random_engine re;
         double sample = unif(re);
@@ -312,7 +319,7 @@ template<typename T> struct QuantumCircuit{
                 return int_to_string(i, results.getRows());
             }
         }
-        // TODO: Finish
+        throw std::runtime_error("No value determined for gate sample.");
     }
     
     public:
@@ -322,7 +329,9 @@ template<typename T> struct QuantumCircuit{
         qubits(),
         gate_matrices(),
         qubit_indices()
-    {}
+    {
+        //all necessary operations handled by initializer lists
+    }
     
     // Custom constructor
     QuantumCircuit(unsigned long long int num_qubits):
@@ -331,6 +340,7 @@ template<typename T> struct QuantumCircuit{
         gate_matrices(),
         qubit_indices()
     {
+        //initialize qubit list
         for(unsigned long long int i = 0; i < num_qubits; ++i) {
             qubits.push_back(Qubit<T>());
         }
@@ -373,6 +383,7 @@ template<typename T> struct QuantumCircuit{
 
     // Destructor
     ~QuantumCircuit(){
+        // pop back elements from all vectors
         while(!qubits.empty()){
             qubits.pop_back();
         }
@@ -445,7 +456,7 @@ template<typename T> struct QuantumCircuit{
     }
 
     // collects samples and returns them in a map
-    std::unordered_map<std::string, unsigned long long int> sampleCircuit(unsigned long long int samples){
+    const std::unordered_map<std::string, unsigned long long int>& sampleCircuit(unsigned long long int samples){
         std::unordered_map<std::string, unsigned long long int> ans;
         std::vector<ComplexMatrix<T>> gate_results;
         //make sure to start in consistent state
@@ -461,30 +472,33 @@ template<typename T> struct QuantumCircuit{
             // for each gate in the circuit
             for(unsigned long long int j = 0; j < gate_results.size(); ++j){
                 //propagate results of gate through circuit, storing intermediate results in appropriate qubits
-                std::string sample = sampleGate(gate_results[i]);
+                std::string gate_sample = sampleGate(gate_results[j]);
+                for(unsigned long long int bit = 0; bit < gate_sample.length(); ++bit){
+                    if(gate_sample[bit] == '0'){
+                        this->qubits[this->qubit_indices[j][bit]].turnOff();
+                    } else if(gate_sample[bit] == '1'){
+                        this->qubits[this->qubit_indices[j][bit]].turnOn();
+                    } else{
+                        [[unlikely]]
+                        throw std::runtime_error("Could not identify value to set candidate qubit to.  Please check configuration of circuit.");
+                    }
+                }
             }
             // Turn end results into string and add it to map of results and count occurrences
-            //TODO: Finish
+            std::string sample = "";
+            for(unsigned long long int index = 0; index < qubits.size(); ++index){
+                ComplexMatrix<T> state = (const ComplexMatrix<T>&) qubits[i].getState();
+                if(std::abs(state.getElement(0, 0)) >= 0.5){
+                    sample += '0';
+                } else if(std::abs(state.getElement(1, 0)) >= 0.5){
+                    sample += '1';
+                } else{
+                    [[unlikely]]
+                    throw std::runtime_error("Qubit sample failed.");
+                }
+            }
+            ++ans[sample];
         }
         return ans;
     }
 };
-
-template<typename T> std::ostream& operator<<(std::ostream& os, const QuantumCircuit<T>& circ){
-    std::vector<ComplexMatrix<T>> gates;
-    circ.getGates(gates);
-    auto indices = circ.getIndices();
-    os << circ.numQubits() << std::endl;
-    os << gates.size() << std::endl;
-    for(unsigned long long int i = 0; i < gates.size(); ++i){
-        os << gates[i] << std::endl;
-    }
-    os << indices.size() << std::endl;
-    for(unsigned long long int i = 0; i < gates.size(); ++i){
-        for(auto j: indices[i]){
-            os << j << " " << std::endl;
-        }
-        os << std::endl;
-    }
-    return os;
-}

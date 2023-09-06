@@ -9,3 +9,5 @@ Makefile
 *.cmake
 Testing/*
 *Testfile.cmake
+*.tcl
+*/*.tcl
