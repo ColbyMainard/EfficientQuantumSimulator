@@ -7,6 +7,7 @@
 #include <complex>
 #include <unordered_map>
 #include <string>
+#include <memory>
 
 template<typename T> ComplexMatrix<T> X_gate(){
     ComplexMatrix<T> ans(2, 2);
@@ -159,7 +160,7 @@ template<typename T> struct QuantumCircuit{
     }
 
     // Returns a matrix representing transformation, as well as updating qubit internal states for next gate
-    ComplexMatrix<T> runGate(unsigned long long int gate_index){
+    void runGate(unsigned long long int gate_index, SharedComplexMatrixPtr<T>& results){
         ComplexMatrix<T> gate_matrix((const ComplexMatrix<T>&) *(gate_matrices.at(gate_index)));
         std::vector<unsigned long long int> qubits_involved = qubit_indices[gate_index];
         // input validation
@@ -189,39 +190,44 @@ template<typename T> struct QuantumCircuit{
             start.setElement(7, 0, qubits[qubits_involved[0]].getState().getElement(1, 0) * qubits[qubits_involved[1]].getState().getElement(1, 0) * qubits[qubits_involved[2]].getState().getElement(1, 0));
         }
         //perform calculation of final Hilbert space
-        ComplexMatrix<T> ans = gate_matrix * start;
+        for (int i = 0; i < gate_matrix.getRows(); ++i){
+    		for (int j = 0; j < start.getCols(); ++j){
+	    		for (int k = 0; k < gate_matrix.getCols(); ++k){
+		    		results->setElement(i, j, results->getElement(i, j) + gate_matrix.getElement(i, k) * start.getElement(k,j));
+			    }
+		    }
+	    }
         // convert final Hilbert space to qubit final states (big-endian)
         if(qubits_involved.size() == 1){
             ComplexMatrix<T> qubit_1_state(2, 1);
-            qubit_1_state.setElement(0, 0, ans.getElement(0, 0));
-            qubit_1_state.setElement(1, 0, ans.getElement(1, 0));
+            qubit_1_state.setElement(0, 0, results->getElement(0, 0));
+            qubit_1_state.setElement(1, 0, results->getElement(1, 0));
             this->qubits[qubits_involved[0]].setState(qubit_1_state);
         }
         if(qubits_involved.size() == 2){
             ComplexMatrix<T> qubit_1_state(2, 1);
-            qubit_1_state.setElement(0, 0, ans.getElement(0, 0) + ans.getElement(1, 0));
-            qubit_1_state.setElement(1, 0, ans.getElement(2, 0) + ans.getElement(3, 0));
+            qubit_1_state.setElement(0, 0, results->getElement(0, 0) + results->getElement(1, 0));
+            qubit_1_state.setElement(1, 0, results->getElement(2, 0) + results->getElement(3, 0));
             this->qubits[qubits_involved[0]].setState(qubit_1_state);
             ComplexMatrix<T> qubit_2_state(2, 1);
-            qubit_2_state.setElement(0, 0, ans.getElement(0, 0) + ans.getElement(2, 0));
-            qubit_2_state.setElement(1, 0, ans.getElement(1, 0) + ans.getElement(3, 0));
+            qubit_2_state.setElement(0, 0, results->getElement(0, 0) + results->getElement(2, 0));
+            qubit_2_state.setElement(1, 0, results->getElement(1, 0) + results->getElement(3, 0));
             this->qubits[qubits_involved[1]].setState(qubit_2_state);
         }
         if(qubits_involved.size() == 3){
             ComplexMatrix<T> qubit_1_state(2, 1);
-            qubit_1_state.setElement(0, 0, ans.getElement(0, 0) + ans.getElement(1, 0) + ans.getElement(2, 0) + ans.getElement(3, 0));
-            qubit_1_state.setElement(1, 0, ans.getElement(4, 0) + ans.getElement(5, 0) + ans.getElement(6, 0) + ans.getElement(7, 0));
+            qubit_1_state.setElement(0, 0, results->getElement(0, 0) + results->getElement(1, 0) + results->getElement(2, 0) + results->getElement(3, 0));
+            qubit_1_state.setElement(1, 0, results->getElement(4, 0) + results->getElement(5, 0) + results->getElement(6, 0) + results->getElement(7, 0));
             this->qubits[qubits_involved[0]].setState(qubit_1_state);
             ComplexMatrix<T> qubit_2_state(2, 1);
-            qubit_2_state.setElement(0, 0, ans.getElement(0, 0) + ans.getElement(1, 0) + ans.getElement(4, 0) + ans.getElement(5, 0));
-            qubit_2_state.setElement(1, 0, ans.getElement(2, 0) + ans.getElement(3, 0) + ans.getElement(6, 0) + ans.getElement(7, 0));
+            qubit_2_state.setElement(0, 0, results->getElement(0, 0) + results->getElement(1, 0) + results->getElement(4, 0) + results->getElement(5, 0));
+            qubit_2_state.setElement(1, 0, results->getElement(2, 0) + results->getElement(3, 0) + results->getElement(6, 0) + results->getElement(7, 0));
             this->qubits[qubits_involved[0]].setState(qubit_2_state);
             ComplexMatrix<T> qubit_3_state(2, 1);
-            qubit_3_state.setElement(0, 0, ans.getElement(0, 0) + ans.getElement(2, 0) + ans.getElement(4, 0) + ans.getElement(6, 0));
-            qubit_3_state.setElement(1, 0, ans.getElement(1, 0) + ans.getElement(3, 0) + ans.getElement(5, 0) + ans.getElement(7, 0));
+            qubit_3_state.setElement(0, 0, results->getElement(0, 0) + results->getElement(2, 0) + results->getElement(4, 0) + results->getElement(6, 0));
+            qubit_3_state.setElement(1, 0, results->getElement(1, 0) + results->getElement(3, 0) + results->getElement(5, 0) + results->getElement(7, 0));
             this->qubits[qubits_involved[0]].setState(qubit_3_state);
         }
-        return ans;
     }
 
     //Helper method to int_to_string
@@ -444,7 +450,7 @@ template<typename T> struct QuantumCircuit{
         return qubit_indices;
     }
 
-    // for querying the size of the
+    // for querying the size of the circuit in qubits
     const unsigned long long int numQubits(){
         return this->num_qubits;
     }
@@ -456,14 +462,27 @@ template<typename T> struct QuantumCircuit{
     }
 
     // collects samples and returns them in a map
-    const std::unordered_map<std::string, unsigned long long int>& sampleCircuit(unsigned long long int samples){
-        std::unordered_map<std::string, unsigned long long int> ans;
-        std::vector<ComplexMatrix<T>> gate_results;
+    void sampleCircuit(unsigned long long int samples, std::unordered_map<std::string, unsigned long long int>& results){
+        std::vector<SharedComplexMatrixPtr<T>> gate_results;
         //make sure to start in consistent state
         turnAllQubitsOff();
         // Calculate before and after of each gate
         for(unsigned long long int i = 0; i < qubit_indices.size(); ++i){
-            gate_results.push_back(runGate(i));
+            if (qubit_indices[i].size() == 1){
+                SharedComplexMatrixPtr<T> results = std::shared_ptr<ComplexMatrix<T>>(new ComplexMatrix<T>(2, 1));
+                runGate(i, results);
+                gate_results.push_back(results);
+            } else if (qubit_indices[i].size() == 2){
+                SharedComplexMatrixPtr<T> results = std::shared_ptr<ComplexMatrix<T>>(new ComplexMatrix<T>(4, 1));
+                runGate(i, results);
+                gate_results.push_back(results);
+            } else if (qubit_indices[i].size() == 3){
+                SharedComplexMatrixPtr<T> results = std::shared_ptr<ComplexMatrix<T>>(new ComplexMatrix<T>(8, 1));
+                runGate(i, results);
+                gate_results.push_back(results);
+            } else {
+                throw std::runtime_error("Gate size invalid.");
+            }
         }
         // for each sample to be taken
         for(unsigned long long int i = 0; i < samples; ++i){
@@ -472,7 +491,7 @@ template<typename T> struct QuantumCircuit{
             // for each gate in the circuit
             for(unsigned long long int j = 0; j < gate_results.size(); ++j){
                 //propagate results of gate through circuit, storing intermediate results in appropriate qubits
-                std::string gate_sample = sampleGate(gate_results[j]);
+                std::string gate_sample = sampleGate(*(gate_results[j]));
                 for(unsigned long long int bit = 0; bit < gate_sample.length(); ++bit){
                     if(gate_sample[bit] == '0'){
                         this->qubits[this->qubit_indices[j][bit]].turnOff();
@@ -487,18 +506,16 @@ template<typename T> struct QuantumCircuit{
             // Turn end results into string and add it to map of results and count occurrences
             std::string sample = "";
             for(unsigned long long int index = 0; index < qubits.size(); ++index){
-                ComplexMatrix<T> state = (const ComplexMatrix<T>&) qubits[i].getState();
-                if(std::abs(state.getElement(0, 0)) >= 0.5){
+                if(std::abs(qubits[i].getState().getElement(0, 0)) >= 0.5){
                     sample += '0';
-                } else if(std::abs(state.getElement(1, 0)) >= 0.5){
+                } else if(std::abs(qubits[i].getState().getElement(1, 0)) >= 0.5){
                     sample += '1';
                 } else{
                     [[unlikely]]
                     throw std::runtime_error("Qubit sample failed.");
                 }
             }
-            ++ans[sample];
+            ++results[sample];
         }
-        return ans;
     }
 };

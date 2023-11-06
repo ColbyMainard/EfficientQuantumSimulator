@@ -308,7 +308,8 @@ TEST_CASE("Benchmark X Circuit", "[x]"){
     std::cout << "X Test..." << std::endl;
     QuantumCircuit<double> test(1);
     test.addGate(X_gate<double>(), {0});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(results["0"] == 0);
     REQUIRE(results["1"] == 100);
     std::cout << "Done!" << std::endl;
@@ -318,7 +319,8 @@ TEST_CASE("Benchmark Y Circuit", "[y]"){
     std::cout << "Y Test..." << std::endl;
     QuantumCircuit<double> test(1);
     test.addGate(Y_gate<double>(), {0});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(results["0"] == 0);
     REQUIRE(results["1"] == 100);
     std::cout << "Done!" << std::endl;
@@ -328,7 +330,8 @@ TEST_CASE("Benchmark Z Circuit", "[z]"){
     std::cout << "\tZ Test..." << std::endl;
     QuantumCircuit<double> test(1);
     test.addGate(Z_gate<double>(), {0});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(results["0"] == 100);
     REQUIRE(results["1"] == 0);
     std::cout << "\tDone!" << std::endl;
@@ -338,7 +341,8 @@ TEST_CASE("Benchmark H Circuit", "[h]"){
     std::cout << "H Test..." << std::endl;
     QuantumCircuit<double> test(1);
     test.addGate(H_gate<double>(), {0});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(48 < results["0"]);
     REQUIRE(52 > results["0"]);
     REQUIRE(48 < results["1"]);
@@ -350,7 +354,8 @@ TEST_CASE("Benchmark Rx Circuit", "[rx]"){
     std::cout << "Rx Test..." << std::endl;
     QuantumCircuit<double> test(1);
     test.addGate(Rx_gate<double>(.7), {0});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(85 < results["0"]);
     REQUIRE(90 > results["0"]);
     REQUIRE(10 < results["1"]);
@@ -362,7 +367,8 @@ TEST_CASE("Benchmark Ry Circuit", "[ry]"){
     std::cout << "Ry Test..." << std::endl;
     QuantumCircuit<double> test(1);
     test.addGate(Ry_gate<double>(.7), {0});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(85 < results["0"]);
     REQUIRE(90 > results["0"]);
     REQUIRE(10 < results["1"]);
@@ -374,7 +380,8 @@ TEST_CASE("Benchmark Rz Circuit", "[rz]"){
     std::cout << "Rz Test..." << std::endl;
     QuantumCircuit<double> test(1);
     test.addGate(Rz_gate<double>(.7), {0});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(results["0"] == 100);
     std::cout << "Done!" << std::endl;
 }
@@ -383,7 +390,8 @@ TEST_CASE("Benchmark S Circuit", "[s]"){
     std::cout << "S Test..." << std::endl;
     QuantumCircuit<double> test(1);
     test.addGate(S_gate<double>(), {0});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(results["0"] == 100);
     std::cout << "Done!" << std::endl;
 }
@@ -392,7 +400,8 @@ TEST_CASE("Benchmark T Circuit", "[t]"){
     std::cout << "T Test..." << std::endl;
     QuantumCircuit<double> test(1);
     test.addGate(T_gate<double>(), {0});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(results["0"] == 100);
     std::cout << "Done!" << std::endl;
 }
@@ -401,7 +410,8 @@ TEST_CASE("Benchmark CNOT Circuit", "[cnot]"){
     std::cout << "\tCNOT Test..." << std::endl;
     QuantumCircuit<double> test(2);
     test.addGate(CNOT_gate<double>(), {0, 1});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(results["00"] == 100);
     std::cout << "\tDone!" << std::endl;
 }
@@ -410,7 +420,8 @@ TEST_CASE("Benchmark CZ Circuit", "[cz]"){
     std::cout << "CZ Test..." << std::endl;
     QuantumCircuit<double> test(2);
     test.addGate(CZ_gate<double>(), {0, 1});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(results["00"] == 100);
     std::cout << "Done!" << std::endl;
 }
@@ -419,7 +430,8 @@ TEST_CASE("Benchmark SWAP Circuit", "[swap]"){
     std::cout << "SWAP Test..." << std::endl;
     QuantumCircuit<double> test(2);
     test.addGate(SWAP_gate<double>(), {0, 1});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(results["00"] == 100);
     std::cout << "Done!" << std::endl;
 }
@@ -428,7 +440,8 @@ TEST_CASE("Benchmark Toffoli Circuit", "[toffoli]"){
     std::cout << "Toffoli Test..." << std::endl;
     QuantumCircuit<double> test(3);
     test.addGate(Toffoli_gate<double>(), {0, 1, 2});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(results["000"] == 100);
     std::cout << "Done!" << std::endl;
 }
@@ -437,7 +450,8 @@ TEST_CASE("Benchmark Fredkin Circuit", "[fredkin]"){
     std::cout << "Fredkin Test..." << std::endl;
     QuantumCircuit<double> test(3);
     test.addGate(Fredkin_gate<double>(), {0, 1, 2});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(results["000"] == 100);
     std::cout << "Done!" << std::endl;
 }
@@ -447,7 +461,8 @@ TEST_CASE("Benchmark Bell Circuit", "[bell]"){
     QuantumCircuit<double> test(2);
     test.addGate(H_gate<double>(), {0});
     test.addGate(CNOT_gate<double>(), {0, 1});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(48 < results["00"]);
     REQUIRE(52 > results["00"]);
     REQUIRE(48 < results["11"]);
@@ -476,7 +491,8 @@ TEST_CASE("Benchmark Random Circuit", "[random]"){
     test.addGate(CZ_gate<double>(), {2, 3});
     test.addGate(Toffoli_gate<double>(), {0, 1, 2});
     test.addGate(Fredkin_gate<double>(), {1, 2, 3});
-    auto results = test.sampleCircuit(100);
+    std::unordered_map<std::string, unsigned long long int> results;
+    test.sampleCircuit(100, results);
     REQUIRE(1 < results["0000"]);
     REQUIRE(4 > results["0000"]);
     REQUIRE(1 < results["0001"]);
